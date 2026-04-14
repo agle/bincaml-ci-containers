@@ -1,23 +1,28 @@
 #k
 # CI Docker images — included by top-level Makefile
-CI_REGISTRY = ghcr.io/c-cube/c-cube-commmon
-CI_VERSIONS = 4.08 4.14 5.0 5.4
+CI_REGISTRY = ghcr.io/agle/bincaml-ci-containers
+CI_VERSIONS = 5.0 5.4
 
 # To update: curl -s https://api.github.com/repos/ocaml/opam-repository/commits/master | jq -r .sha
 OPAM_REPO_COMMIT ?= 67472cd54293d750a62d6d4423024d55f77268b0
-CI_BASE_OS_PACKAGES = pkg-config libcurl4-openssl-dev libgmp-dev mccs
+CI_BASE_OS_PACKAGES = gmp-dev
 
-CI_COMMON_PACKAGES = dune ptime hmap pbrt pbrt_yojson ambient-context mtime alcotest
+CI_COMMON_PACKAGES = dune ptime sexplib zarith yojson mtime alcotest base
+
+CI_EXTRA_OS_PACKAGES = tree-sitter-cli nodejs bash
 
 CI_PACKAGES_408 = $(CI_COMMON_PACKAGES)
 CI_PACKAGES_414 = $(CI_COMMON_PACKAGES) ocamlformat.0.27.0
 CI_PACKAGES_50  = $(CI_COMMON_PACKAGES)
-CI_PACKAGES_53_DOC = $(CI_COMMON_PACKAGES) ocamlformat.0.27.0 odig odoc
+CI_PACKAGES_53_DOC = $(CI_COMMON_PACKAGES) ocamlformat.0.27.0 odig odoc odoc_driver
 CI_PACKAGES_54  = $(CI_COMMON_PACKAGES)
 
-CI_BUILD = docker build -f deps/dockerfile.ocaml \
+CI_BUILD = podman build -f deps/dockerfile.ocaml \
     --build-arg OPAM_REPO_COMMIT=$(OPAM_REPO_COMMIT) \
-    --build-arg "BASE_OS_PACKAGES=$(CI_BASE_OS_PACKAGES)"
+    --build-arg "BASE_OS_PACKAGES=$(CI_BASE_OS_PACKAGES)" \
+    --build-arg "EXTRA_OS_PACKAGES=$(CI_EXTRA_OS_PACKAGES)"
+
+build-ci-docker: build-5.0 build-5.3 build-5.4
 
 build-4.08:
 	$(CI_BUILD) --build-arg OCAML_VERSION=4.08.1 --build-arg "BASE_PACKAGES=$(CI_PACKAGES_408)" -t $(CI_REGISTRY)/ci-4.08:latest .
@@ -34,7 +39,6 @@ build-5.3:
 build-5.4:
 	$(CI_BUILD) --build-arg OCAML_VERSION=5.4.1  --build-arg "BASE_PACKAGES=$(CI_PACKAGES_54)"  -t $(CI_REGISTRY)/ci-5.4:latest .
 
-build-ci-docker: build-4.08 build-4.14 build-5.0 build-5.3 build-5.4
 
 upload-ci-docker:
 	@for v in $(CI_VERSIONS); do \
