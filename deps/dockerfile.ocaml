@@ -26,7 +26,7 @@ RUN git init /tmp/opam-repo && cd /tmp/opam-repo && \
 RUN opam init --disable-sandboxing --bare --no-setup -k local /tmp/opam-repo && \
     opam switch create /root/w --packages=ocaml-base-compiler.$OCAML_VERSION
 
-RUN opam install --no-depexts $BASE_PACKAGES && \
+RUN opam install $BASE_PACKAGES && \
     opam clean -a -y && \
     ./strip_ocaml.sh && \
     rm -rf /tmp/opam-repo
@@ -37,8 +37,8 @@ ARG EXTRA_OS_PACKAGES=""
 COPY --from=opam-setup /root/.opam /root/.opam
 COPY --from=opam-setup /root/w/_opam /root/w/_opam
 ENV OPAMROOT=/root/.opam OPAMSWITCH=/root/w PATH=/root/w/_opam/bin:$PATH
-RUN wget -O boogie.apk https://codeberg.org/agle/-/packages/alpine/boogie/3.5.6-r0/files/9194019 \
- && wget -O bnfc.apk https://codeberg.org/agle/-/packages/alpine/bnfc/3.9.7-r0/files/9194031 \
- && apk add --allow-untrusted ./boogie.apk ./bnfc.apk $EXTRA_OS_PACKAGES && rm *.apk
+RUN cd /etc/apk/keys && curl -JO https://codeberg.org/api/packages/agle/alpine/key 
+RUN echo "https://codeberg.org/api/packages/agle/alpine/v3.20/aaports" >> /etc/apk/repositories && apk update
+RUN apk add $EXTRA_OS_PACKAGES
 
 WORKDIR /root/w
