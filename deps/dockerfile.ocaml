@@ -5,7 +5,7 @@ FROM $BASE_OS AS base
 ARG BASE_OS_PACKAGES=""
 ENV OPAMROOTISOK=1 OPAMYES=1 OPAMCONFIRMLEVEL=unsafe-yes
 RUN apk update && \
-    apk add ca-certificates curl git unzip alpine-sdk $BASE_OS_PACKAGES
+    apk add --no-cache ca-certificates curl git unzip alpine-sdk $BASE_OS_PACKAGES
 RUN curl -fsSL https://github.com/ocaml/opam/releases/download/2.5.0/opam-2.5.0-x86_64-linux -o /usr/local/bin/opam && \
     chmod +x /usr/local/bin/opam && \
     git config --system --add safe.directory '*'
@@ -39,6 +39,6 @@ COPY --from=opam-setup /root/w/_opam /root/w/_opam
 ENV OPAMROOT=/root/.opam OPAMSWITCH=/root/w PATH=/root/w/_opam/bin:$PATH
 RUN cd /etc/apk/keys && curl -JO https://codeberg.org/api/packages/agle/alpine/key 
 RUN echo "https://codeberg.org/api/packages/agle/alpine/v3.20/aaports" >> /etc/apk/repositories && apk update
-RUN apk add $EXTRA_OS_PACKAGES
+RUN apk add --no-cache $EXTRA_OS_PACKAGES
 
 WORKDIR /root/w

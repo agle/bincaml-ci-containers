@@ -4,12 +4,15 @@ CI_REGISTRY = ghcr.io/agle/bincaml-ci-containers
 CI_VERSIONS = 5.4
 
 # To update: curl -s https://api.github.com/repos/ocaml/opam-repository/commits/master | jq -r .sha
-OPAM_REPO_COMMIT ?= 67472cd54293d750a62d6d4423024d55f77268b0
+OPAM_REPO_COMMIT ?= 28d044eb9ccd9b9275c54a845b30932c3d934aa0
 CI_BASE_OS_PACKAGES = gmp-dev ca-certificates curl git unzip alpine-sdk bash
 
-CI_COMMON_PACKAGES = dune ptime sexplib zarith yojson mtime alcotest base
+CI_COMMON_PACKAGES = dune ptime sexplib zarith yojson mtime alcotest base ocamlgraph \
+										 base logs lwt linol-lwt linol ppxlib \
+										 ppx_enumerate ppx_expect ppx_hash ppx_here ppx_import qcheck-stm qcheck \
+										 trace trace-tef cppo either fix hector intPQueue jst-config jane-street-headers iter
 
-CI_EXTRA_OS_PACKAGES = tree-sitter-cli nodejs bash bnfc boogie cvc5
+CI_EXTRA_OS_PACKAGES = tree-sitter-cli nodejs bash bnfc boogie cvc5 linux-headers diffutils
 
 CI_PACKAGES_408 = $(CI_COMMON_PACKAGES)
 CI_PACKAGES_414 = $(CI_COMMON_PACKAGES) ocamlformat.0.29.0
