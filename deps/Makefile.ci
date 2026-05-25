@@ -4,13 +4,17 @@ CI_REGISTRY = ghcr.io/agle/bincaml-ci-containers
 CI_VERSIONS = 5.4
 
 # To update: curl -s https://api.github.com/repos/ocaml/opam-repository/commits/master | jq -r .sha
-OPAM_REPO_COMMIT ?= 28d044eb9ccd9b9275c54a845b30932c3d934aa0
+OPAM_REPO_COMMIT ?= 856df280428c158a5bb0b3afce1bec956b10ae6f
 CI_BASE_OS_PACKAGES = gmp-dev ca-certificates curl git unzip alpine-sdk bash
 
 CI_COMMON_PACKAGES = dune ptime sexplib zarith yojson mtime alcotest base ocamlgraph \
 										 base logs lwt linol-lwt linol ppxlib \
-										 ppx_enumerate ppx_expect ppx_hash ppx_here ppx_import qcheck-stm qcheck \
-										 trace trace-tef cppo either fix hector intPQueue jst-config jane-street-headers iter
+										 ppx_enumerate ppx_expect ppx_hash ppx_here ppx_import ppx_deriving qcheck-stm qcheck \
+										 trace trace-tef cppo either fix hector intPQueue jst-config jane-street-headers iter \
+										 containers containers-data pp_loc qcheck-alcotest \
+										 angstrom ocaml-protoc-plugin
+
+
 
 CI_EXTRA_OS_PACKAGES = tree-sitter-cli nodejs bash bnfc boogie cvc5 linux-headers diffutils
 
@@ -47,5 +51,4 @@ upload-ci:
 	@for v in $(CI_VERSIONS); do \
 		podman push $(CI_REGISTRY)/ci-$$v:latest ; \
 	done && \
-	podman push $(CI_REGISTRY)/ci-doc-5.3:latest || \
-	( echo  "to login:  podman login ghcr.io -u <your-github-username>" ; exit 1 )
+	podman push $(CI_REGISTRY)/ci-doc-5.3:latest
