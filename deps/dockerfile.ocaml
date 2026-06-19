@@ -26,6 +26,8 @@ RUN git init /tmp/opam-repo && cd /tmp/opam-repo && \
 RUN opam init --disable-sandboxing --bare --no-setup -k local /tmp/opam-repo && \
     opam switch create /root/w --packages=ocaml-base-compiler.$OCAML_VERSION
 
+
+RUN opam repository add pac https://github.com/uq-pac/opam-repository.git && opam update
 RUN opam install $BASE_PACKAGES && \
     opam clean -a -y && \
     ./strip_ocaml.sh && \

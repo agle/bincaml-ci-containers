@@ -4,15 +4,15 @@ CI_REGISTRY = ghcr.io/agle/bincaml-ci-containers
 CI_VERSIONS = 5.4
 
 # To update: curl -s https://api.github.com/repos/ocaml/opam-repository/commits/master | jq -r .sha
-OPAM_REPO_COMMIT ?= 856df280428c158a5bb0b3afce1bec956b10ae6f
-CI_BASE_OS_PACKAGES = gmp-dev ca-certificates curl git unzip alpine-sdk bash
+OPAM_REPO_COMMIT ?= 62b12ba368e4dea1ce219b794916425313ff4e0d
+CI_BASE_OS_PACKAGES = gmp-dev ca-certificates curl git unzip alpine-sdk bash protobuf protobuf-dev
 
 CI_COMMON_PACKAGES = dune ptime sexplib zarith yojson mtime alcotest base ocamlgraph \
 										 base logs lwt linol-lwt linol ppxlib \
 										 ppx_enumerate ppx_expect ppx_hash ppx_here ppx_import ppx_deriving qcheck-stm qcheck \
 										 trace trace-tef cppo either fix hector intPQueue jst-config jane-street-headers iter \
 										 containers containers-data pp_loc qcheck-alcotest \
-										 angstrom ocaml-protoc-plugin
+										 angstrom menhir ocaml-protoc-plugin aslp_lifter_ocaml 
 
 
 
