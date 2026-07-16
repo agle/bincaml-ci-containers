@@ -16,6 +16,7 @@ FROM base AS opam-setup
 ARG OCAML_VERSION
 ARG OPAM_REPO_COMMIT=master
 ARG BASE_PACKAGES=""
+ARG KEEP_DOC="NO"
 
 COPY strip_ocaml.sh ./
 RUN git init /tmp/opam-repo && cd /tmp/opam-repo && \
@@ -30,7 +31,6 @@ RUN opam init --disable-sandboxing --bare --no-setup -k local /tmp/opam-repo && 
 RUN opam repository add pac https://github.com/uq-pac/opam-repository.git && opam update
 RUN opam install $BASE_PACKAGES && \
     opam clean -a -y && \
-    ./strip_ocaml.sh && \
     rm -rf /tmp/opam-repo
 
 # --- Stage 3: final image (base + switch only) ---

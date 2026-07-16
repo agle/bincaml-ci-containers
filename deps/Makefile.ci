@@ -4,15 +4,16 @@ CI_REGISTRY = ghcr.io/agle/bincaml-ci-containers
 CI_VERSIONS = 5.4
 
 # To update: curl -s https://api.github.com/repos/ocaml/opam-repository/commits/master | jq -r .sha
-OPAM_REPO_COMMIT ?= 62b12ba368e4dea1ce219b794916425313ff4e0d
-CI_BASE_OS_PACKAGES = gmp-dev ca-certificates curl git unzip alpine-sdk bash protobuf protobuf-dev
+OPAM_REPO_COMMIT ?= 009959aa9bfb2ad1c1d252137957496b181f73a4
+CI_BASE_OS_PACKAGES = gmp-dev ca-certificates curl git unzip alpine-sdk bash protobuf protobuf-dev capstone capstone-dev
 
 CI_COMMON_PACKAGES = dune ptime sexplib zarith yojson mtime alcotest base ocamlgraph \
 										 base logs lwt linol-lwt linol ppxlib \
 										 ppx_enumerate ppx_expect ppx_hash ppx_here ppx_import ppx_deriving qcheck-stm qcheck \
 										 trace trace-tef cppo either fix hector intPQueue jst-config jane-street-headers iter \
-										 containers containers-data pp_loc qcheck-alcotest \
-										 angstrom menhir ocaml-protoc-plugin aslp_lifter_ocaml 
+										 pp_loc qcheck-alcotest \
+										 angstrom menhir ocaml-protoc-plugin aslp_lifter_ocaml kittyimg linenoise \
+                                         patricia-tree  result store terminal_size
 
 
 
@@ -41,7 +42,7 @@ build-5.0:
 	$(CI_BUILD) --build-arg OCAML_VERSION=5.0.0  --build-arg "BASE_PACKAGES=$(CI_PACKAGES_50)"     -t $(CI_REGISTRY)/ci-5.0:latest .
 
 build-5.3:
-	$(CI_BUILD) --build-arg OCAML_VERSION=5.3.0  --build-arg "BASE_PACKAGES=$(CI_PACKAGES_53_DOC)" -t $(CI_REGISTRY)/ci-doc-5.3:latest .
+	$(CI_BUILD) --build-arg OCAML_VERSION=5.3.0 --build-arg "KEEP_DOC=KEEP_DOC" --build-arg "BASE_PACKAGES=$(CI_PACKAGES_53_DOC)" -t $(CI_REGISTRY)/ci-doc-5.3:latest .
 
 build-5.4:
 	$(CI_BUILD) --build-arg OCAML_VERSION=5.4.1  --build-arg "BASE_PACKAGES=$(CI_PACKAGES_54)"  -t $(CI_REGISTRY)/ci-5.4:latest .
