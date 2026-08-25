@@ -1,11 +1,11 @@
 #k
 # CI Docker images — included by top-level Makefile
-CI_REGISTRY = ghcr.io/agle/bincaml-ci-containers
+CI_REGISTRY = ghcr.io/uq-pac/bincaml-ci-containers
 CI_VERSIONS = 5.4
 
 # To update: curl -s https://api.github.com/repos/ocaml/opam-repository/commits/master | jq -r .sha
-OPAM_REPO_COMMIT ?= 009959aa9bfb2ad1c1d252137957496b181f73a4
-CI_BASE_OS_PACKAGES = gmp-dev ca-certificates curl git unzip alpine-sdk bash protobuf protobuf-dev capstone capstone-dev
+OPAM_REPO_COMMIT ?= 6a37ed493e7fb3871fd38cc7b88b4a56a81045a7
+CI_BASE_OS_PACKAGES_ALPINE = gmp-dev ca-certificates curl git unzip alpine-sdk bash protobuf protobuf-dev capstone capstone-dev
 
 CI_COMMON_PACKAGES = dune ptime sexplib zarith yojson mtime alcotest base ocamlgraph \
 										 base logs lwt linol-lwt linol ppxlib \
@@ -13,11 +13,12 @@ CI_COMMON_PACKAGES = dune ptime sexplib zarith yojson mtime alcotest base ocamlg
 										 trace trace-tef cppo either fix hector intPQueue jst-config jane-street-headers iter \
 										 pp_loc qcheck-alcotest \
 										 angstrom menhir ocaml-protoc-plugin aslp_lifter_ocaml kittyimg linenoise \
-                                         patricia-tree  result store terminal_size
+                                         patricia-tree  result store terminal_size \
+                                         containers stb_image unionFind containers-data
 
 
 
-CI_EXTRA_OS_PACKAGES = tree-sitter-cli nodejs bash bnfc boogie cvc5 linux-headers diffutils
+CI_EXTRA_OS_PACKAGES_ALPINE = tree-sitter-cli nodejs bash bnfc boogie cvc5 linux-headers diffutils
 
 CI_PACKAGES_408 = $(CI_COMMON_PACKAGES)
 CI_PACKAGES_414 = $(CI_COMMON_PACKAGES) ocamlformat.0.29.0
@@ -27,7 +28,7 @@ CI_PACKAGES_54  = $(CI_COMMON_PACKAGES)
 
 CI_BUILD = podman build -f deps/dockerfile.ocaml \
     --build-arg OPAM_REPO_COMMIT=$(OPAM_REPO_COMMIT) \
-    --build-arg "BASE_OS_PACKAGES=$(CI_BASE_OS_PACKAGES)" \
+    --build-arg "BASE_OS_PACKAGES=$(CI_BASE_OS_PACKAGES_ALPINE)" \
     --build-arg "EXTRA_OS_PACKAGES=$(CI_EXTRA_OS_PACKAGES)"
 
 build-ci-docker: build-5.3 build-5.4
@@ -46,6 +47,9 @@ build-5.3:
 
 build-5.4:
 	$(CI_BUILD) --build-arg OCAML_VERSION=5.4.1  --build-arg "BASE_PACKAGES=$(CI_PACKAGES_54)"  -t $(CI_REGISTRY)/ci-5.4:latest .
+
+build-simple-5.4:
+	podman build -f simple.dockerfile --build-arg OCAML_VERSION=5.4 -t $(CI_REGISTRY)/ci-simple-5.4:latest .
 
 
 upload-ci:
